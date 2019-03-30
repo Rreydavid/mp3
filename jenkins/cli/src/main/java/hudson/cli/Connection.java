@@ -142,9 +142,11 @@ public class Connection {
      * DH is also useful as a coin-toss algorithm. Two parties get the same random number without trusting
      * each other.
      */
+    
     public KeyAgreement diffieHellman(boolean side) throws IOException, GeneralSecurityException {
         return diffieHellman(side,512);
     }
+    
     public KeyAgreement diffieHellman(boolean side, int keySize) throws IOException, GeneralSecurityException {
         KeyPair keyPair;
         PublicKey otherHalf;
@@ -153,19 +155,13 @@ public class Connection {
             AlgorithmParameterGenerator paramGen = AlgorithmParameterGenerator.getInstance("DH");
             paramGen.init(keySize);
 
-            KeyPairGenerator dh = KeyPairGenerator.getInstance("DH");
-            dh.initialize(paramGen.generateParameters().getParameterSpec(DHParameterSpec.class));
-            keyPair = dh.generateKeyPair();
-
+            keyPair = generateKeyPairWithSpec(paramGen.generateParameters().getParameterSpec(DHParameterSpec.class));
             // send a half and get a half
             writeKey(keyPair.getPublic());
             otherHalf = KeyFactory.getInstance("DH").generatePublic(readKey());
         } else {
             otherHalf = KeyFactory.getInstance("DH").generatePublic(readKey());
-
-            KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("DH");
-            keyPairGen.initialize(((DHPublicKey) otherHalf).getParams());
-            keyPair = keyPairGen.generateKeyPair();
+            keyPair = generateKeyPairWithSpec(((DHPublicKey) otherHalf).getParams());
 
             // send a half and get a half
             writeKey(keyPair.getPublic());
@@ -177,7 +173,12 @@ public class Connection {
 
         return ka;
     }
-
+    public KeyPair generateKeyPairWithSpec(DHParameterSpec x) throws IOException, GeneralSecurityException {
+        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("DH");
+        keyPairGen.initialize(x);
+        return keyPairGen.generateKeyPair();
+    }	
+    
     /**
      * Upgrades a connection with transport encryption by the specified symmetric cipher.
      *

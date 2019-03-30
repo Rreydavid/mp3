@@ -2,7 +2,10 @@ question 1) This code smell is duplicated code. The refactoring that can be
 		applied to remove this repeared statements is to put it
 		in it's own function call 
 question 3) This code smell is feature envy. The method updateAndTrim should be moved to the jenkins class.
-
+question 4) Since this is duplicated code, can change this into a for loop and
+                check for the condition and then append as needed. Or instead
+                you can turn that into a function and call it each iteration
+                of the loop and check the condition in the function call
 question 6) The code smell we decided to resolve was located at jenkins/core/src/test/java/hudson/scheduler/CronTabTest.java.
 		This code smell is duplicated code, as the same 20 lines are used at both line 99 and 121.
 		To refactor this code move the repeated code to a new method, and replace the blocks of code with a method call.

@@ -571,7 +571,12 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
      * Whitespace-separated labels assigned to the master as a {@link Node}.
      */
     private String label="";
-
+		
+    public void updateAndTrim(){
+        jenkins.updateComputerList();
+        jenkins.trimLabels();
+    }
+	
     /**
      * {@link hudson.security.csrf.CrumbIssuer}
      */

@@ -112,7 +112,7 @@ public class Nodes implements Saveable {
                     Nodes.this.nodes.put(name, n);
                 }
                 Nodes.this.nodes.keySet().removeAll(toRemove); // directory clean up will be handled by save
-                updateAndTrim();
+                jenkins.updateAndTrim();
             }
         });
         save();
@@ -125,10 +125,6 @@ public class Nodes implements Saveable {
      * @throws IOException if the list of nodes could not be persisted.
      */
     
-    public void updateAndTrim(){
-        jenkins.updateComputerList();
-        jenkins.trimLabels();
-    }
     public void addNode(final @Nonnull Node node) throws IOException {
         if (node != nodes.get(node.getNodeName())) {
             // TODO we should not need to lock the queue for adding nodes but until we have a way to update the
@@ -137,7 +133,7 @@ public class Nodes implements Saveable {
                 @Override
                 public void run() {
                     nodes.put(node.getNodeName(), node);
-                    updateAndTrim();
+                    jenkins.updateAndTrim();
                 }
             });
             // no need for a full save() so we just do the minimum
@@ -169,7 +165,7 @@ public class Nodes implements Saveable {
                         c.disconnect(OfflineCause.create(hudson.model.Messages._Hudson_NodeBeingRemoved()));
                     }
                     if (node == nodes.remove(node.getNodeName())) {
-                        updateAndTrim();
+                        jenkins.updateAndTrim();
                     }
                 }
             });
@@ -253,7 +249,7 @@ public class Nodes implements Saveable {
                     }
                 }
                 nodes.putAll(newNodes);
-                updateAndTrim();
+                jenkins.updateAndTrim();
             }
         });
     }
